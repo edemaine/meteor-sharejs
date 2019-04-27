@@ -2,12 +2,19 @@ meteor-sharejs
 ==============
 
 
-Meteor smart package for transparently adding [ShareJS](https://github.com/share/ShareJS) editors to an app. Includes [CodeMirror](http://codemirror.net/) and the [Ace editor](http://ace.c9.io/).
+Meteor smart package for transparently adding [ShareJS](https://github.com/share/ShareJS) editors to an app. Includes bindings for [CodeMirror](http://codemirror.net/) and the [Ace editor](http://ace.c9.io/).
 
 This package is only tested for meteor 1.3 or later
 
 This is a fork of [mizzao:sharejs](https://github.com/mizzao/meteor-sharejs)
-to experiment with fixes and/or additional features.
+to experiment with fixes and/or additional features:
+
+* CodeMirror support improvements
+  * [Support multiple simultaneous edits](https://github.com/mizzao/meteor-sharejs/pull/100)
+  * [Prevent undo after initial load from causing document loss](https://github.com/mizzao/meteor-sharejs/pull/99)
+  * [Use peer NPM dependency to allow arbitrary versions](https://github.com/mizzao/meteor-sharejs/pull/97)
+* [Fix mobile support using `Meteor.absoluteUrl`](https://github.com/mizzao/meteor-sharejs/pull/93)
+* [Fix code for Meteor 1.6+](https://github.com/mizzao/meteor-sharejs/pull/94)
 
 ## Install
 
@@ -20,13 +27,13 @@ $ meteor add edemaine:sharejs
 For ShareJS with the Ace editor
 
 ```
-$ meteor add  mizzao:sharejs-ace
+$ meteor add  edemaine:sharejs-ace
 ```
 
 For ShareJS with the CodeMirror editor:
 
 ```
-$ meteor add mizzao:sharejs-codemirror
+$ meteor add edemaine:sharejs-codemirror
 ```
 
 ## Usage
@@ -117,7 +124,7 @@ The Authorization was removed in version 0.9.0, because the current implementati
 
 ## Advanced
 
-You can access the [ShareJS Server API](https://github.com/share/ShareJS/wiki/Server-api) via `import { ShareJS } from 'meteor/mizzao:sharejs'`. For example, you may want to delete documents ops when the document is deleted in your app. See the demo for an example.
+You can access the [ShareJS Server API](https://github.com/share/ShareJS/wiki/Server-api) via `import { ShareJS } from 'meteor/edemaine:sharejs'`. For example, you may want to delete documents ops when the document is deleted in your app. See the demo for an example.
 
 ## Notes
 
@@ -131,4 +138,5 @@ Please submit pull requests for better features and cooperation!
 * Andrew Mao (https://github.com/mizzao/)
 * Karan Batra-Daitch (https://github.com/kbdaitch)
 * CJ Carr (https://github.com/cortexelus)
+* Erik Demaine (https://github.com/edemaine)
 * David Sichau (https://github.com/DavidSichau)
