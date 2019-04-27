@@ -1,7 +1,7 @@
 Package.describe({
   name: "edemaine:sharejs-codemirror",
   summary: "ShareJS with the CodeMirror Editor",
-  version: "5.39.2-alpha.2",
+  version: "5.39.2-alpha.3",
   git: "https://github.com/edemaine/meteor-sharejs.git"
 });
 
