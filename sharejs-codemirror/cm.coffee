@@ -1,39 +1,49 @@
-## Based on
-## https://github.com/HansPinckaers/shareJS/blob/master/src/client/cm.coffee
+###
+This code connects a CodeMirror editor to a sharejs document.
+It was originally based on
+https://github.com/HansPinckaers/shareJS/blob/master/src/client/cm.coffee
+which was in turn inspiredfrom the ace editor hook.
+Then it was tweaked slightly by mizzao for the meteor-sharejs project,
+and finally fixed to handle multiple deltas by Erik Demaine.
+###
 
-# This is some utility code to connect a CodeMirror editor
-# to a sharejs document.
-# It is heavily inspired from the Ace editor hook.
+# Convert CodeMirror deltas into ops understood by share.js
+applyToShareJS = (editorDoc, deltas, doc) ->
+  # Handle single delta with simpler code
+  if deltas.length == 1
+    delta = deltas[0]
+    pos = editorDoc.indexFromPos delta.from
+    if delta.removed.length  # Deleted/replaced line(s) of text
+      delLen = delta.removed.length - 1  # count newlines
+      for rm in delta.removed
+        delLen += rm.length
+      doc.del pos, delLen
+    if delta.text.length  # Insertion/replacement line(s) of text
+      doc.insert pos, delta.text.join '\n'
+    return
 
-# Convert a CodeMirror delta into an op understood by share.js
-applyToShareJS = (editorDoc, delta, doc) ->
-  # CodeMirror deltas give a text replacement.
-  # I tuned this operation a little bit, for speed.
-  startPos = 0  # Get character position from # of chars in each line.
-  i = 0         # i goes through all lines.
+  # Handle multiple deltas. This is tricky because each delta adjusts the
+  # indexing within the document, but all deltas are indexed in terms of
+  # the current document, yet we only have the "after" editor document.
+  # We use the current sharejs document as a proxy for the current document.
+  for delta in deltas
+    #console.log delta
+    # Compute index for edit's "from" line/ch using current document text.
+    text = doc.getText()
+    index = 0
+    for i in [0...delta.from.line]
+      index = 1 + text.indexOf '\n', index
+    index += delta.from.ch
+    if delta.removed.length  # Deleted/replaced
+      delLen = delta.removed.length - 1  # count newlines
+      for rm in delta.removed
+        delLen += rm.length
+      #console.log 'deleting', index, delLen
+      doc.del index, delLen if delLen
+    if delta.text.length  # Insertion/replacement
+      #console.log 'inserting', index, delta.text.join '\\n'
+      doc.insert index, delta.text.join '\n'
 
-  while i < delta.from.line
-    startPos += editorDoc.lineInfo(i).text.length + 1   # Add 1 for '\n'
-    i++
-
-  startPos += delta.from.ch
-
-  if delta.to.line == delta.from.line &&
-     delta.to.ch == delta.from.ch # Then nothing was removed.
-    doc.insert startPos, delta.text.join '\n'
-  else
-    #delLen = delta.to.ch - delta.from.ch
-    #while i < delta.to.line
-    #  delLen += editorDoc.lineInfo(i).text.length + 1   # Add 1 for '\n'
-    #  i++
-    delLen = 0
-    for rm in delta.removed
-      delLen += rm.length
-    delLen += delta.removed.length - 1  # count newlines
-    doc.del startPos, delLen
-    doc.insert startPos, delta.text.join '\n' if delta.text
-
-  applyToShareJS editorDoc, delta.next, doc if delta.next
 
 # Attach a CodeMirror editor to the document. The editor's contents are replaced
 # with the document's contents unless keepEditorContents is true. (In which case
@@ -78,14 +88,13 @@ window.sharejs.extendDoc 'attach_cm', (editor, keepEditorContents) ->
   editorListener = (ed, change) ->
     return if suppress
     applyToShareJS editor, change, sharedoc
-
     check()
 
-  editor.on 'change', editorListener
+  editor.on 'changes', editorListener
 
   @on 'insert', (pos, text) ->
-    suppress = true
     # All the primitives we need are already in CM's API.
+    suppress = true
     editor.replaceRange text, editor.posFromIndex(pos)
     suppress = false
     check()
@@ -100,7 +109,7 @@ window.sharejs.extendDoc 'attach_cm', (editor, keepEditorContents) ->
 
   @detach_cm = ->
     # TODO: can we remove the insert and delete event callbacks?
-    editor.off 'change', editorListener
+    editor.off 'changes', editorListener
     delete @detach_cm
 
   return
