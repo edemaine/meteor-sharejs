@@ -15,6 +15,7 @@ to experiment with fixes and/or additional features:
   * [Use peer NPM dependency to allow arbitrary versions](https://github.com/mizzao/meteor-sharejs/pull/97)
 * [Fix mobile support using `Meteor.absoluteUrl`](https://github.com/mizzao/meteor-sharejs/pull/93)
 * [Fix code for Meteor 1.6+](https://github.com/mizzao/meteor-sharejs/pull/94)
+* Remove `require` statements from webclient, removing over 900kB from bundle size
 
 ## Install
 

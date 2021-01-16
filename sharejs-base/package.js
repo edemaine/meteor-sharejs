@@ -1,15 +1,15 @@
 Package.describe({
   name: "edemaine:sharejs",
   summary: "server (& client library) to allow concurrent editing of any kind of content",
-  version: "0.10.3-alpha.3",
+  version: "0.10.3-alpha.4",
   git: "https://github.com/edemaine/meteor-sharejs.git"
 });
 
 Npm.depends({
-  // Fork of 0.6.3 that doesn't require("mongodb"):
+  // Fork of 0.6.3 that avoids many require()s, starting with:
   // https://github.com/meteor/meteor/issues/532#issuecomment-82635979
   // Includes "Failed to parse" bugfix
-  share: "https://github.com/mizzao/ShareJS/tarball/05b625ea1e7f7f27bd13ba7ed05102b38dd175e5",
+  share: "https://github.com/edemaine/ShareJS/tarball/b7cb38a224eb49963eab5fd592643ea396e03acd",
   browserchannel: '1.2.0'
 });
 
