@@ -92,14 +92,14 @@ window.sharejs.extendDoc 'attach_cm', (editor, keepEditorContents) ->
 
   editor.on 'changes', editorListener
 
-  @on 'insert', (pos, text) ->
+  @on 'insert', onInsert = (pos, text) ->
     # All the primitives we need are already in CM's API.
     suppress = true
     editor.replaceRange text, editor.posFromIndex(pos)
     suppress = false
     check()
 
-  @on 'delete', (pos, text) ->
+  @on 'delete', onDelete = (pos, text) ->
     suppress = true
     from = editor.posFromIndex pos
     to = editor.posFromIndex (pos + text.length)
@@ -108,7 +108,8 @@ window.sharejs.extendDoc 'attach_cm', (editor, keepEditorContents) ->
     check()
 
   @detach_cm = ->
-    # TODO: can we remove the insert and delete event callbacks?
+    @removeListener 'insert', onInsert
+    @removeListener 'delete', onDelete
     editor.off 'changes', editorListener
     delete @detach_cm
 
