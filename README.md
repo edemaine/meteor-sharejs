@@ -61,6 +61,9 @@ The templates will clean themselves up when re-rendered (i.e., you have several 
 
 ## Client Configuration
 
+You can define an `onError` callback to define custom sharejs error handling
+behavior.
+
 For the Ace and CodeMirror editors, you can define `onRender` and `onConnect` callbacks in the options hash and use it to configure the editor. `onRender` is called when the editor is initially rendered, and `onConnect` is called after each successful connection to a document.
 
 ```

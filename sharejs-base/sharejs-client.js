@@ -37,6 +37,7 @@ export class ShareJSConnector {
         const params = Blaze.getData(parentView);
         this.configCallback = params.onRender;
         this.connectCallback = params.onConnect;
+        this.errorCallback = params.onError;
     }
 
     create() {
@@ -84,6 +85,9 @@ export class ShareJSConnector {
 
     attach(doc) {
         this.doc = doc;
+        if (typeof this.errorCallback === "function") {
+            this.doc.on('error', this.errorCallback.bind(this));
+        }
     }
 
     disconnect() {
