@@ -72,9 +72,9 @@ export class ShareJSConnector {
                 console.log(error);
                 return
             }
-            // Don't attach if re-render happens too quickly and we' re trying to
-            // connect to a different document now.
-            if(this.connectingId !== doc.name) {
+            // Don't attach if re-render happens too quickly and we're trying to
+            // connect to a different document now, or view is destroyed.
+            if(this.connectingId !== doc.name || this.isDestroyed) {
                 doc.close();
             }
             else {
